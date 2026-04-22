@@ -147,8 +147,10 @@ export class Player extends Physics.Arcade.Sprite {
         // Attacks
         if (punchJust && this.attackCooldown <= 0) {
             this.startAttack('punch', 15, 60);
+            return;
         } else if (kickJust && this.attackCooldown <= 0) {
             this.startAttack('kick', 25, 72);
+            return;
         } else if (shurikenJust && this.shurikens > 0) {
             this.doThrowShuriken();
         }
@@ -176,9 +178,17 @@ export class Player extends Physics.Arcade.Sprite {
         this.setTint(type === 'punch' ? 0xffff88 : 0x88eeff);
         this.scene.time.delayedCall(150, () => { if (!this.isHurt) this.clearTint(); });
 
-        this.anims.play(`player-${type}`, true);
-        this.once(Animations.Events.ANIMATION_COMPLETE, () => {
-            this.isAttacking = false;
+        const attackAnimKey = `player-${type}`;
+        this.anims.play(attackAnimKey, true);
+
+        // Only end the attack when THIS attack animation finishes.
+        this.once(Animations.Events.ANIMATION_COMPLETE_KEY, (_anim, _frame, _gameObject, key) => {
+            if (key === attackAnimKey) this.isAttacking = false;
+        });
+
+        // Failsafe: if the animation is interrupted (or never completes), don't get stuck attacking.
+        this.scene.time.delayedCall(450, () => {
+            if (!this.isHurt) this.isAttacking = false;
         });
     }
 
@@ -210,6 +220,11 @@ export class Player extends Physics.Arcade.Sprite {
 
     takeDamage(amount: number, knockbackDir: number = 0) {
         if (this.isHurt) return;
+
+        // If we get interrupted mid-attack, clear attack state so controls don't lock.
+        this.isAttacking = false;
+        this.attackWindowMs = 0;
+        this.hitThisSwing.clear();
 
         const dmg = this.isBlocking ? Math.max(1, Math.floor(amount * 0.15)) : amount;
         this.hp = Math.max(0, this.hp - dmg);
