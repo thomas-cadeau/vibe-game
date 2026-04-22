@@ -97,6 +97,11 @@ export class Preloader extends Scene {
             // Right arm: forearm then dark fist extending clearly past the body
             fr(C.body); rect(32, 20, 8, 6);
             fr(C.dark); rect(38, 18, 8, 10);   // dark green fist, well outside torso
+        } else if (state === 'kick') {
+            // Left arm raised up for balance
+            fr(C.body); rect(10, 12, 6, 14);
+            // Right arm pulled back (guard)
+            fr(C.body); rect(34, 20, 6, 8);
         } else if (state === 'block') {
             fr(C.body); rect(10, 14, 6, 14); rect(32, 14, 6, 14);
         } else {
@@ -113,11 +118,11 @@ export class Preloader extends Scene {
         } else if (state === 'jump') {
             fr(C.body); rect(15, 36, 7, 8); rect(26, 36, 7, 8);
         } else if (state === 'kick') {
-            // Left leg standing
-            fr(C.body); rect(17, 36, 6, 10);
-            // Right leg: thigh up, then horizontal kick extending far right
-            fr(C.body); rect(26, 32, 8, 7);      // thigh (horizontal)
-            fr(C.dark); rect(32, 28, 14, 9);     // dark shin+foot, well outside body
+            // Left leg slightly bent (standing)
+            fr(C.body); rect(17, 38, 6, 8);
+            // Right leg: thigh raised horizontally, then bright blue boot
+            fr(C.body); rect(25, 32, 10, 7);          // thigh
+            fr(C.mask); rect(33, 26, 14, 12);         // blue boot — clearly visible, clearly a kick
         } else {
             fr(C.body); rect(17, 36, 6, 10); rect(25, 36, 6, 10);
             fr(C.dark); rect(17, 44, 6, 2); rect(25, 44, 6, 2);

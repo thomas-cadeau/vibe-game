@@ -172,9 +172,9 @@ export class Player extends Physics.Arcade.Sprite {
         this.hitThisSwing.clear();
         this.setVelocityX(0);
 
-        // Yellow charge-up flash so the attack is always visible
-        this.setTint(0xffff88);
-        this.scene.time.delayedCall(120, () => { if (!this.isHurt) this.clearTint(); });
+        // Colour flash: yellow for punch, cyan for kick — makes attack type immediately clear
+        this.setTint(type === 'punch' ? 0xffff88 : 0x88eeff);
+        this.scene.time.delayedCall(150, () => { if (!this.isHurt) this.clearTint(); });
 
         this.anims.play(`player-${type}`, true);
         this.once(Animations.Events.ANIMATION_COMPLETE, () => {
