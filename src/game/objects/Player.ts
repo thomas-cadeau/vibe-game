@@ -60,7 +60,7 @@ export class Player extends Physics.Arcade.Sprite {
 
         const body = this.body as Physics.Arcade.Body;
         body.setSize(20, 42);
-        body.setOffset(6, 4);
+        body.setOffset(14, 4);  // centred in new 48px-wide frame (body at x=16–32)
         this.setCollideWorldBounds(true);
         this.setDepth(10);
 
@@ -171,6 +171,10 @@ export class Player extends Physics.Arcade.Sprite {
         this.attackWindowMs = 200;
         this.hitThisSwing.clear();
         this.setVelocityX(0);
+
+        // Yellow charge-up flash so the attack is always visible
+        this.setTint(0xffff88);
+        this.scene.time.delayedCall(120, () => { if (!this.isHurt) this.clearTint(); });
 
         this.anims.play(`player-${type}`, true);
         this.once(Animations.Events.ANIMATION_COMPLETE, () => {

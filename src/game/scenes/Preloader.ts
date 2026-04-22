@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 
-const PW = 32;   // player frame width
+const PW = 48;   // player frame width (wider to allow visible arm/leg reach)
 const PH = 48;   // player frame height
 const EW = 28;   // enemy frame width
 const EH = 44;   // enemy frame height
@@ -71,50 +71,56 @@ export class Preloader extends Scene {
         const C = { body: 0x4caf50, dark: 0x2e7d32, mask: 0x1565c0, eye: 0xffffff, shell: 0x8d6e63, shellDark: 0x5d4037 };
         const dy = state === 'hurt' ? 2 : 0;
         const fr = (c: number, a = 1) => { ctx.fillStyle = hex(c, a); };
-
+        // Body is centred in 48px frame by shifting +8 vs original 32px design
         const rect = (x: number, y: number, w: number, h: number) => ctx.fillRect(ox + x, dy + y, w, h);
 
         // head
-        fr(C.body); rect(10, 4, 12, 12);
-        // mask band
-        fr(C.mask); rect(8, 8, 16, 5); ctx.fillRect(ox + 24, dy + 8, 6, 3); ctx.fillRect(ox + 24, dy + 11, 4, 3);
+        fr(C.body); rect(18, 4, 12, 12);
+        // mask band + bandana tails
+        fr(C.mask); rect(16, 8, 16, 5);
+        ctx.fillRect(ox + 32, dy + 8, 6, 3); ctx.fillRect(ox + 32, dy + 11, 4, 3);
         // eyes
-        fr(C.eye); rect(10, 9, 4, 3); rect(18, 9, 4, 3);
-        fr(C.dark); rect(12, 10, 2, 2); rect(20, 10, 2, 2);
-        // neck + torso
-        fr(C.body); rect(13, 16, 6, 3); rect(8, 18, 16, 18);
+        fr(C.eye); rect(18, 9, 4, 3); rect(26, 9, 4, 3);
+        fr(C.dark); rect(20, 10, 2, 2); rect(28, 10, 2, 2);
+        // neck + torso  (x: 16–32)
+        fr(C.body); rect(21, 16, 6, 3); rect(16, 18, 16, 18);
         // shell
-        fr(C.shell); rect(10, 19, 12, 15);
+        fr(C.shell); rect(18, 19, 12, 15);
         fr(C.shellDark);
-        rect(10, 23, 12, 1); rect(10, 27, 12, 1); rect(10, 31, 12, 1);
-        rect(14, 19, 1, 15); rect(18, 19, 1, 15);
+        rect(18, 23, 12, 1); rect(18, 27, 12, 1); rect(18, 31, 12, 1);
+        rect(22, 19, 1, 15); rect(26, 19, 1, 15);
 
         // arms
-        fr(C.body);
         if (state === 'punch') {
-            rect(0, 20, 8, 6); rect(22, 20, 10, 6);
+            // Left arm pulled back
+            fr(C.dark); rect(10, 22, 6, 6);
+            // Right arm: forearm then dark fist extending clearly past the body
+            fr(C.body); rect(32, 20, 8, 6);
+            fr(C.dark); rect(38, 18, 8, 10);   // dark green fist, well outside torso
         } else if (state === 'block') {
-            rect(2, 14, 6, 14); rect(24, 14, 6, 14);
+            fr(C.body); rect(10, 14, 6, 14); rect(32, 14, 6, 14);
         } else {
-            rect(2, 20, 6, 8); rect(24, 20, 6, 8);
+            fr(C.body); rect(10, 20, 6, 8); rect(32, 20, 6, 8);
         }
 
         // legs
-        fr(C.body);
         if (state === 'run0' || state === 'run2') {
-            rect(9, 36, 6, 12); rect(17, 36, 6, 7);
-            fr(C.dark); rect(9, 46, 6, 2);
-        } else if (state === 'run1' || state === 'run3') {
-            rect(9, 36, 6, 7); rect(17, 36, 6, 12);
+            fr(C.body); rect(17, 36, 6, 12); rect(25, 36, 6, 7);
             fr(C.dark); rect(17, 46, 6, 2);
+        } else if (state === 'run1' || state === 'run3') {
+            fr(C.body); rect(17, 36, 6, 7); rect(25, 36, 6, 12);
+            fr(C.dark); rect(25, 46, 6, 2);
         } else if (state === 'jump') {
-            rect(7, 36, 7, 8); rect(18, 36, 7, 8);
+            fr(C.body); rect(15, 36, 7, 8); rect(26, 36, 7, 8);
         } else if (state === 'kick') {
-            rect(9, 36, 6, 10); rect(17, 28, 15, 7);
-            fr(C.dark); rect(29, 28, 3, 7);
+            // Left leg standing
+            fr(C.body); rect(17, 36, 6, 10);
+            // Right leg: thigh up, then horizontal kick extending far right
+            fr(C.body); rect(26, 32, 8, 7);      // thigh (horizontal)
+            fr(C.dark); rect(32, 28, 14, 9);     // dark shin+foot, well outside body
         } else {
-            rect(9, 36, 6, 10); rect(17, 36, 6, 10);
-            fr(C.dark); rect(9, 44, 6, 2); rect(17, 44, 6, 2);
+            fr(C.body); rect(17, 36, 6, 10); rect(25, 36, 6, 10);
+            fr(C.dark); rect(17, 44, 6, 2); rect(25, 44, 6, 2);
         }
 
         if (state === 'hurt') {
