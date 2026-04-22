@@ -92,7 +92,7 @@ export class Preloader extends Scene {
         // arms
         fr(C.body);
         if (state === 'punch') {
-            rect(0, 20, 8, 6); rect(24, 20, 10, 6);
+            rect(0, 20, 8, 6); rect(22, 20, 10, 6);
         } else if (state === 'block') {
             rect(2, 14, 6, 14); rect(24, 14, 6, 14);
         } else {
@@ -289,8 +289,8 @@ export class Preloader extends Scene {
         A.create({ key: 'player-idle', frames: [{ key: 'player', frame: 0 }, { key: 'player', frame: 1 }], frameRate: 2, repeat: -1 });
         A.create({ key: 'player-run', frames: [0, 1, 2, 3].map(f => ({ key: 'player', frame: f + 2 })), frameRate: 8, repeat: -1 });
         A.create({ key: 'player-jump', frames: [{ key: 'player', frame: 6 }], frameRate: 1, repeat: 0 });
-        A.create({ key: 'player-punch', frames: [{ key: 'player', frame: 7 }, { key: 'player', frame: 0 }], frameRate: 12, repeat: 0 });
-        A.create({ key: 'player-kick', frames: [{ key: 'player', frame: 8 }, { key: 'player', frame: 0 }], frameRate: 10, repeat: 0 });
+        A.create({ key: 'player-punch', frames: [{ key: 'player', frame: 7 }, { key: 'player', frame: 0 }], frameRate: 5, repeat: 0 });
+        A.create({ key: 'player-kick',  frames: [{ key: 'player', frame: 8 }, { key: 'player', frame: 0 }], frameRate: 5, repeat: 0 });
         A.create({ key: 'player-hurt', frames: [{ key: 'player', frame: 9 }], frameRate: 1, repeat: 0 });
         A.create({ key: 'player-block', frames: [{ key: 'player', frame: 10 }], frameRate: 1, repeat: 0 });
 

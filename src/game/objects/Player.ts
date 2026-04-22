@@ -33,7 +33,10 @@ export class Player extends Physics.Arcade.Sprite {
     isAttacking = false;
     attackDamage = 0;
     attackRange = 0;
-    attackJustStarted = false;
+    /** Counts down from 200ms when an attack starts; hit detection fires while > 0 */
+    attackWindowMs = 0;
+    /** Enemies already hit in this swing — prevents double damage */
+    hitThisSwing: Set<object> = new Set();
     facingRight = true;
 
     private isBlocking = false;
@@ -78,7 +81,8 @@ export class Player extends Physics.Arcade.Sprite {
     }
 
     update(_time: number, delta: number) {
-        this.attackJustStarted = false;
+        if (this.attackWindowMs > 0) this.attackWindowMs = Math.max(0, this.attackWindowMs - delta);
+        if (this.attackWindowMs === 0) this.hitThisSwing.clear();
 
         if (this.isHurt) {
             this.hurtTimer -= delta;
@@ -164,7 +168,8 @@ export class Player extends Physics.Arcade.Sprite {
         this.attackDamage = damage;
         this.attackRange = range;
         this.attackCooldown = ATTACK_COOLDOWN;
-        this.attackJustStarted = true;
+        this.attackWindowMs = 200;
+        this.hitThisSwing.clear();
         this.setVelocityX(0);
 
         this.anims.play(`player-${type}`, true);

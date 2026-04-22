@@ -207,7 +207,7 @@ export class Game extends Scene {
 
         // Player attack hits enemies
         this.physics.world.on('worldstep', () => {
-            if (!this.player.attackJustStarted) return;
+            if (this.player.attackWindowMs <= 0) return;
             const dir = this.player.facingRight ? 1 : -1;
             const { attackDamage, attackRange } = this.player;
             let hit = false;
@@ -215,11 +215,14 @@ export class Game extends Scene {
             this.enemies.getChildren().forEach(obj => {
                 const enemy = obj as unknown as Enemy;
                 if (!enemy.active || enemy.isDead()) return;
+                if (this.player.hitThisSwing.has(enemy)) return;
                 const dx = enemy.x - this.player.x;
                 const dy = Math.abs(enemy.y - this.player.y);
-                const sameDir = this.player.facingRight ? dx > 0 : dx < 0;
-                if (Math.abs(dx) < attackRange && sameDir && dy < 70) {
+                // Allow small tolerance behind the player (±15px) for close-range hits
+                const inArc = this.player.facingRight ? dx >= -15 : dx <= 15;
+                if (Math.abs(dx) < attackRange && inArc && dy < 70) {
                     enemy.takeDamage(attackDamage, dir);
+                    this.player.hitThisSwing.add(enemy);
                     hit = true;
                 }
             });
