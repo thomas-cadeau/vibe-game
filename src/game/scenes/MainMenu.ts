@@ -55,12 +55,9 @@ export class MainMenu extends Scene {
         g.fillStyle(0x8d6e63); g.fillCircle(512, 541, 16);
 
         // Input
-        const enter = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.input.once('pointerdown', () => this.startGame());
         this.input.keyboard!.once('keydown-ENTER', () => this.startGame());
         this.input.keyboard!.once('keydown-SPACE', () => this.startGame());
-
-        void enter; // suppress unused warning
 
         EventBus.emit('current-scene-ready', this);
     }
