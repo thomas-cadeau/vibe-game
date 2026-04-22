@@ -108,12 +108,11 @@ export class Game extends Scene {
         // Sky (fixed, no scroll)
         this.add.image(512, 288, 'bg-sky').setScrollFactor(0).setDepth(-3);
 
-        // City silhouette – slow parallax
-        this.add.image(512, 288, 'bg-city').setScrollFactor(0.15).setDepth(-2);
-        this.add.image(512 + 2048, 288, 'bg-city').setScrollFactor(0.15).setDepth(-2);
+        // City silhouette – slow parallax (tile across world width)
+        this.add.tileSprite(512, 288, 1024, 576, 'bg-city').setScrollFactor(0.15).setDepth(-2);
 
         // Street layer – near parallax
-        this.add.image(2048, 288, 'bg-street').setScrollFactor(0.7).setDepth(-1);
+        this.add.tileSprite(512, 526, 1024, 100, 'bg-street').setScrollFactor(0.7).setDepth(-1);
     }
 
     private buildLevel() {
